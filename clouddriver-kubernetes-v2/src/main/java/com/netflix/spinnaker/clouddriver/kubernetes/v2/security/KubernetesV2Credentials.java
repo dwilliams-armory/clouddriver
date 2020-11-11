@@ -25,6 +25,7 @@ import static lombok.EqualsAndHashCode.Include;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
@@ -332,7 +333,10 @@ public class KubernetesV2Credentials implements KubernetesCredentials {
       if (startup) {
         startup = false;
         kubectlRequestTimeoutSecondsTmp = kubectlRequestTimeoutSeconds;
-        kubectlRequestTimeoutSeconds = kubectlInitialRequestTimeoutSeconds;
+        if (kubectlInitialRequestTimeoutSeconds != null)
+          kubectlRequestTimeoutSeconds = kubectlInitialRequestTimeoutSeconds;
+        else if (kubectlRequestTimeoutSeconds == null || kubectlRequestTimeoutSeconds > 30)
+          kubectlRequestTimeoutSeconds = 30;
       }
 
       return jobExecutor
