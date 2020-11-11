@@ -95,7 +95,7 @@ public class KubernetesV2Credentials implements KubernetesCredentials {
 
   @Include @Getter private final String kubectlExecutable;
 
-  @Include @Getter private final Integer kubectlRequestTimeoutSeconds;
+  @Include @Getter private Integer kubectlRequestTimeoutSeconds;
 
   @Getter private final String kubeconfigFile;
 
@@ -120,6 +120,10 @@ public class KubernetesV2Credentials implements KubernetesCredentials {
   @Include private boolean metrics;
 
   @Include @Getter private final boolean debug;
+
+  private boolean startup = true;
+
+  private Integer kubectlRequestTimeoutSecondsTmp;
 
   @Getter private final ResourcePropertyRegistry resourcePropertyRegistry;
   private final KubernetesKindRegistry kindRegistry;
@@ -321,6 +325,11 @@ public class KubernetesV2Credentials implements KubernetesCredentials {
   @Nonnull
   private ImmutableList<String> namespaceSupplier() {
     try {
+      if (startup) {
+        startup = false;
+        kubectlRequestTimeoutSecondsTmp = kubectlRequestTimeoutSeconds;
+        kubectlRequestTimeoutSeconds = 30;
+      }
       return jobExecutor
           .list(this, ImmutableList.of(KubernetesKind.NAMESPACE), "", new KubernetesSelectorList())
           .stream()
@@ -329,6 +338,8 @@ public class KubernetesV2Credentials implements KubernetesCredentials {
     } catch (KubectlException e) {
       log.error("Could not list namespaces for account {}: {}", accountName, e.getMessage());
       return ImmutableList.of();
+    } finally {
+      kubectlRequestTimeoutSeconds = kubectlRequestTimeoutSecondsTmp;
     }
   }
 
