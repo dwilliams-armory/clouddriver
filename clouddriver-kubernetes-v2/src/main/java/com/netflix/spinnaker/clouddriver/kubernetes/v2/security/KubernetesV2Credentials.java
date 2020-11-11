@@ -123,6 +123,8 @@ public class KubernetesV2Credentials implements KubernetesCredentials {
 
   private boolean startup = true;
 
+  private Integer kubectlInitialRequestTimeoutSeconds;
+
   private Integer kubectlRequestTimeoutSecondsTmp;
 
   @Getter private final ResourcePropertyRegistry resourcePropertyRegistry;
@@ -179,6 +181,8 @@ public class KubernetesV2Credentials implements KubernetesCredentials {
 
     this.kubectlExecutable = managedAccount.getKubectlExecutable();
     this.kubectlRequestTimeoutSeconds = managedAccount.getKubectlRequestTimeoutSeconds();
+    this.kubectlInitialRequestTimeoutSeconds =
+        managedAccount.getKubectlInitialRequestTimeoutSeconds();
     this.kubeconfigFile = kubeconfigFile;
     this.kubeconfigFileHash = KubeconfigFileHasher.hashKubeconfigFile(kubeconfigFile);
     this.serviceAccount = managedAccount.isServiceAccount();
@@ -328,8 +332,9 @@ public class KubernetesV2Credentials implements KubernetesCredentials {
       if (startup) {
         startup = false;
         kubectlRequestTimeoutSecondsTmp = kubectlRequestTimeoutSeconds;
-        kubectlRequestTimeoutSeconds = 30;
+        kubectlRequestTimeoutSeconds = kubectlInitialRequestTimeoutSeconds;
       }
+
       return jobExecutor
           .list(this, ImmutableList.of(KubernetesKind.NAMESPACE), "", new KubernetesSelectorList())
           .stream()

@@ -41,6 +41,7 @@ public class KubernetesConfigurationProperties {
     private String kubeconfigContents;
     private String kubectlExecutable;
     private Integer kubectlRequestTimeoutSeconds;
+    private Integer kubectlInitialRequestTimeoutSeconds;
     private boolean serviceAccount = false;
     private boolean configureImagePullSecrets = true;
     private List<String> namespaces = new ArrayList<>();
