@@ -17,6 +17,7 @@
 package com.netflix.spinnaker.clouddriver
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.netflix.spinnaker.clouddriver.config.ThreadConfiguration
 import com.netflix.spinnaker.clouddriver.security.config.SecurityConfig
 import com.netflix.spinnaker.kork.boot.DefaultPropertiesBuilder
 import com.netflix.spinnaker.kork.configserver.ConfigServerBootstrap
@@ -37,7 +38,6 @@ import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Primary
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
 import org.springframework.scheduling.annotation.EnableScheduling
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler
 import sun.net.InetAddressCachePolicy
 
 import java.security.Security
@@ -63,14 +63,6 @@ import java.security.Security
 @EnableScheduling
 class Main extends SpringBootServletInitializer {
   private static final Map<String, Object> DEFAULT_PROPS = new DefaultPropertiesBuilder().build()
-
-  @Bean
-  public ThreadPoolTaskScheduler threadPoolTaskScheduler(){
-    ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
-    threadPoolTaskScheduler.setPoolSize(2);
-    threadPoolTaskScheduler.setThreadNamePrefix("ThreadPoolTaskScheduler");
-    return threadPoolTaskScheduler;
-  }
 
   static {
     /**
