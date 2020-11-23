@@ -31,10 +31,10 @@ public class ThreadConfiguration {
   @Autowired private ThreadConfigurationProperties threadConfigurationProperties;
 
   @Bean
-  @ConditionalOnProperty("custom.armory.enabled")
+  @ConditionalOnProperty("clouddriver.startup-threads")
   public ThreadPoolTaskScheduler threadPoolTaskScheduler() {
     ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
-    threadPoolTaskScheduler.setPoolSize(threadConfigurationProperties.getThreads());
+    threadPoolTaskScheduler.setPoolSize(threadConfigurationProperties.getStartupThreads());
     threadPoolTaskScheduler.setThreadNamePrefix("ThreadPoolTaskScheduler");
     return threadPoolTaskScheduler;
   }

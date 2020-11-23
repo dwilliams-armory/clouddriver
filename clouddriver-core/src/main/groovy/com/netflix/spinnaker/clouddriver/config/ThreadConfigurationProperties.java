@@ -24,16 +24,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @Setter
-@ConditionalOnProperty("clouddriver.startup-threads")
+@ConditionalOnProperty("clouddriver.account-threads")
 @ConfigurationProperties("clouddriver")
 public class ThreadConfigurationProperties {
-  private Integer startupThreads;
-
   private Integer accountThreads;
-
-  public Integer getStartupThreads() {
-    return startupThreads;
-  }
 
   public Integer getAccountThreads() {
     return accountThreads;
